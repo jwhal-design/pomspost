@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>POMS on a Post-It: ISTE Standards for Students</title>
+<style>
+  /* ====== EDIT HERE ====== */
+  /* Optional: paste a Padlet/Jamboard/shared-doc URL into WALL_URL in the script below. */
+  :root {
+    --bg: #24394a;
+    --bg2: #2e4a5f;
+    --ink: #1d1d1b;
+    --paper: #ffffff;
+    --note: #ffe45c;
+    --note-edge: #f2cf2a;
+    --accent: #0a6bb0;
+    --muted: #5b6770;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    background: radial-gradient(circle at 30% 10%, var(--bg2), var(--bg) 70%);
+    color: var(--ink);
+    font: 18px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    padding: env(safe-area-inset-top, 0) 16px env(safe-area-inset-bottom, 0);
+  }
+  main { max-width: 640px; margin: 0 auto; padding: 28px 0 48px; }
+  h1 { color: #fff; font-size: 1.1rem; font-weight: 600; margin: 0 0 18px; opacity: .85; }
+
+  .card {
+    background: var(--paper); border-radius: 14px; padding: 22px 22px 18px; margin-bottom: 26px;
+  }
+  .you-got { margin: 0; color: var(--muted); font-size: 1rem; }
+  .std-name { font-size: 2.1rem; line-height: 1.15; margin: 4px 0 14px; font-weight: 800; }
+  .std-num { color: var(--accent); }
+  .ind-label { margin: 0 0 6px; font-size: 1rem; color: var(--muted); }
+  .std-desc { margin: 0 0 14px; font-size: 1.1rem; }
+  ul.ind { margin: 0 0 18px; padding: 0; list-style: none; }
+  ul.ind li { margin: 0 0 12px; padding-left: 12px; border-left: 4px solid var(--note); }
+  .ind-name { display: block; font-weight: 700; color: var(--accent); font-size: .95rem; }
+  .btn {
+    display: inline-block; border: 0; border-radius: 10px; padding: 14px 18px;
+    font: inherit; font-weight: 700; cursor: pointer; text-decoration: none; text-align: center;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-ghost { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,.6); }
+  .btn-dark { background: var(--ink); color: #fff; }
+  .btn:focus-visible, textarea:focus-visible, input:focus-visible { outline: 3px solid #7cc4ff; outline-offset: 2px; }
+  .card .btn { width: 100%; }
+
+  .steps { color: #fff; margin: 0 0 12px; font-size: 1.05rem; }
+
+  .note {
+    background: var(--note); border-bottom: 6px solid var(--note-edge);
+    padding: 20px 20px 14px; transform: rotate(-1.2deg);
+    box-shadow: 0 14px 24px rgba(0,0,0,.28);
+    margin-bottom: 18px;
+  }
+  .note-head { font-weight: 800; font-size: 1rem; margin: 0 0 8px; }
+  .note textarea {
+    width: 100%; min-height: 180px; border: 0; resize: vertical; background: transparent;
+    font: 1.45rem/1.35 "Marker Felt", "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive;
+    color: var(--ink);
+  }
+  .note textarea::placeholder { color: rgba(0,0,0,.45); }
+  .note-foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .note input {
+    border: 0; border-bottom: 2px dashed rgba(0,0,0,.35); background: transparent;
+    font: 1rem system-ui, sans-serif; padding: 4px 2px; width: 60%;
+  }
+  .count { font-size: .9rem; color: rgba(0,0,0,.6); }
+
+  .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .actions .wide { grid-column: 1 / -1; }
+  .toast { color: #fff; min-height: 1.5em; margin-top: 10px; text-align: center; }
+
+  /* Big view for holding up a phone or projecting */
+  #big {
+    position: fixed; inset: 0; background: var(--bg); display: none;
+    align-items: center; justify-content: center; padding: 24px; z-index: 10;
+  }
+  #big.on { display: flex; }
+  #big .note { transform: rotate(-1.5deg); width: min(92vw, 820px); max-height: 90vh; overflow: auto; }
+  #bigStd { font-weight: 800; font-size: clamp(1.1rem, 3vw, 1.8rem); margin: 0 0 10px; }
+  #bigText {
+    font: clamp(1.6rem, 5vw, 3.2rem)/1.25 "Marker Felt", "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive;
+    white-space: pre-wrap; margin: 0 0 12px;
+  }
+  #bigName { font-size: clamp(1rem, 2.5vw, 1.4rem); text-align: right; margin: 0; }
+  #closeBig { position: fixed; top: calc(12px + env(safe-area-inset-top, 0)); right: 12px; }
+
+  footer { color: rgba(255,255,255,.6); font-size: .8rem; margin-top: 28px; }
+  footer a { color: rgba(255,255,255,.8); }
+
+  @media (prefers-reduced-motion: reduce) { .note { transform: none !important; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>POMS on a Post-It</h1>
+
+  <section class="card" aria-live="polite">
+    <p class="you-got">Your standard:</p>
+    <h2 class="std-name"><span class="std-num" id="stdNum"></span> <span id="stdTitle"></span></h2>
+    <p class="std-desc" id="stdDesc"></p>
+    <p class="ind-label">Students:</p>
+    <ul class="ind" id="indList"></ul>
+    <a class="btn btn-primary" id="readLink" target="_blank" rel="noopener">See it on ISTE (with examples and videos)</a>
+  </section>
+
+  <p class="steps">Read it. Then write the single most significant point, and why it matters.</p>
+
+  <div class="note">
+    <p class="note-head" id="noteHead"></p>
+    <label for="poms" class="sr" style="position:absolute;left:-9999px">Your point of most significance</label>
+    <textarea id="poms" maxlength="220" placeholder="The most significant point is... because..."></textarea>
+    <div class="note-foot">
+      <label for="who" style="position:absolute;left:-9999px">Your name</label>
+      <input id="who" placeholder="Your name (optional)" maxlength="40">
+      <span class="count" id="count">0 / 220</span>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-dark wide" id="showBig">Show my post-it big</button>
+    <button class="btn btn-ghost" id="copyBtn">Copy text</button>
+    <button class="btn btn-ghost" id="wallBtn" hidden>Copy + open group wall</button>
+  </div>
+  <p class="toast" id="toast" role="status"></p>
+
+  <footer>
+    ISTE Standards © 2024 4.02, ISTE (International Society for Technology in Education),
+    <a href="https://iste.org/standards/students" target="_blank" rel="noopener">iste.org/standards</a>. All rights reserved. Used for educational purposes.
+  </footer>
+</main>
+
+<div id="big" role="dialog" aria-modal="true" aria-label="Your post-it, enlarged">
+  <button class="btn btn-ghost" id="closeBig">Close</button>
+  <div class="note">
+    <p id="bigStd"></p>
+    <p id="bigText"></p>
+    <p id="bigName"></p>
+  </div>
+</div>
+
+<script>
+  // ====== EDIT HERE ======
+  // Paste a shared-wall URL (Padlet, Google Doc, etc.) to show a "Copy + open group wall" button.
+  const WALL_URL = "";
+
+  const BASE = "https://iste.org/standards/students";
+  const STANDARDS = [
+    { n: "1.1", t: "Empowered Learner", a: "#1-1-empowered-learner",
+      d: "Students leverage technology to take an active role in choosing, achieving and demonstrating competency in their learning goals, informed by the learning sciences.",
+      i: ["Learning Goals", "Customized Learning Environments", "Feedback to Improve Practice", "Technology Fundamentals"],
+      f: ["Connect their learning needs, strengths and interests to their goals and use technology to help achieve them and reflect on their progress.",
+          "Build networks and customize their learning environments in ways that support the learning process.",
+          "Use technology to seek feedback that informs and improves their practice and to demonstrate their learning in a variety of ways.",
+          "Understand fundamental concepts of how technology works, demonstrate the ability to choose and use current technologies effectively, and are adept at thoughtfully exploring emerging technologies."] },
+    { n: "1.2", t: "Digital Citizen", a: "#1-2-digital-citizen",
+      d: "Students recognize the responsibilities and opportunities for contributing to their digital communities.",
+      i: ["Digital Footprint", "Online Interactions", "Safeguard Well-being", "Digital Privacy"],
+      f: ["Manage their digital identity and understand the lasting impact of their online behaviors on themselves and others and make safe, legal and ethical decisions in the digital world.",
+          "Demonstrate empathetic, inclusive interactions online and use technology to responsibly contribute to their communities.",
+          "Safeguard their well-being by being intentional about what they do online and how much time they spend online.",
+          "Take action to protect their digital privacy on devices and manage their personal data and security while online."] },
+    { n: "1.3", t: "Knowledge Constructor", a: "#1-3-knowledge-constructor",
+      d: "Students critically curate a variety of resources using digital tools to construct knowledge, produce creative artifacts and make meaningful learning experiences for themselves and others.",
+      i: ["Effective Research Strategies", "Evaluate Information", "Curate Information", "Explore Real-World Issues"],
+      f: ["Use effective research strategies to find resources that support their learning needs, personal interests and creative pursuits.",
+          "Evaluate the accuracy, validity, bias, origin, and relevance of digital content.",
+          "Curate information from digital resources using a variety of tools and methods to create collections of artifacts that demonstrate meaningful connections or conclusions.",
+          "Build knowledge by exploring real-world issues and gain experience in applying their learning in authentic settings."] },
+    { n: "1.4", t: "Innovative Designer", a: "#1-4-innovative-designer",
+      d: "Students use a variety of technologies within a design process to identify and solve problems by creating new, useful or imaginative solutions.",
+      i: ["Design Process", "Design Constraints", "Prototypes", "Open-Ended Problems"],
+      f: ["Know and use a deliberate design process for generating ideas, testing theories, creating innovative artifacts or solving authentic problems.",
+          "Select and use digital tools to plan and manage a design process that considers design constraints and calculated risks.",
+          "Develop, test and refine prototypes as part of a cyclical design process.",
+          "Exhibit a tolerance for ambiguity, perseverance and the capacity to work with open-ended problems."] },
+    { n: "1.5", t: "Computational Thinker", a: "#1-5-computational-thinker",
+      d: "Students develop and employ strategies for understanding and solving problems in ways that leverage the power of technological methods to develop and test solutions.",
+      i: ["Problem Definitions", "Data Sets", "Decompose Problems", "Algorithmic Thinking"],
+      f: ["Formulate problem definitions suited for technology-assisted methods such as data analysis, abstract models and algorithmic thinking in exploring and finding solutions.",
+          "Collect data or identify relevant data sets, use digital tools to analyze them, and represent data in various ways to facilitate problem-solving and decision-making.",
+          "Break problems into component parts, extract key information, and develop descriptive models to understand complex systems or facilitate problem-solving.",
+          "Understand how automation works and use algorithmic thinking to develop a sequence of steps to create and test automated solutions."] },
+    { n: "1.6", t: "Creative Communicator", a: "#1-6-creative-communicator",
+      d: "Students communicate clearly and express themselves creatively for a variety of purposes using the platforms, tools, styles, formats and digital media appropriate to their goals.",
+      i: ["Choose Platforms or Tools", "Original and Remixed Works", "Communicate Complex Ideas", "Customize the Message"],
+      f: ["Choose the appropriate platforms and digital tools for meeting the desired objectives of their creation or communication.",
+          "Create original works or responsibly repurpose or remix digital resources into new creations.",
+          "Use digital tools to visually communicate complex ideas to others.",
+          "Publish or present content that customizes the message and medium for their intended audiences."] },
+    { n: "1.7", t: "Global Collaborator", a: "#1-7-global-collaborator",
+      d: "Students use digital tools to broaden their perspectives and enrich their learning by collaborating with others and working effectively in teams locally and globally.",
+      i: ["Global Connections", "Multiple Viewpoints", "Project Teams", "Local and Global Issues"],
+      f: ["Use digital tools to connect with peers from a variety of backgrounds recognizing diverse viewpoints and broadening mutual understanding.",
+          "Use collaborative technologies to work with others, including peers, experts or community members, to examine issues and problems from multiple viewpoints.",
+          "Contribute constructively to project teams, assuming various roles and responsibilities to work effectively toward a common goal.",
+          "Explore local and global issues and use collaborative technologies to work with others to investigate solutions."] }
+  ];
+
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  };
+
+  // Assignment: ?s=1..7 forces a standard (facilitator override). Otherwise random, and sticky on refresh.
+  const param = parseInt(new URLSearchParams(location.search).get("s"), 10);
+  let idx;
+  if (param >= 1 && param <= 7) {
+    idx = param - 1;
+  } else {
+    const saved = parseInt(store.get("poms-std"), 10);
+    if (saved >= 0 && saved <= 6) idx = saved;
+    else {
+      const r = new Uint32Array(1); crypto.getRandomValues(r);
+      idx = r[0] % 7;
+    }
+  }
+  store.set("poms-std", String(idx));
+  const S = STANDARDS[idx];
+
+  const $ = id => document.getElementById(id);
+  $("stdNum").textContent = S.n;
+  $("stdTitle").textContent = S.t;
+  $("stdDesc").textContent = S.d;
+  $("indList").innerHTML = S.i.map((x, k) =>
+    `<li><span class="ind-name">${S.n}.${"abcd"[k]} ${x}</span>${S.f[k]}</li>`).join("");
+  $("readLink").href = BASE + S.a;
+  $("noteHead").textContent = `${S.n} ${S.t}`;
+
+  const poms = $("poms"), who = $("who"), count = $("count");
+  poms.value = store.get("poms-text-" + idx) || "";
+  who.value = store.get("poms-name") || "";
+  const updateCount = () => { count.textContent = `${poms.value.length} / 220`; };
+  updateCount();
+  poms.addEventListener("input", () => { updateCount(); store.set("poms-text-" + idx, poms.value); });
+  who.addEventListener("input", () => store.set("poms-name", who.value));
+
+  const toast = msg => { $("toast").textContent = msg; setTimeout(() => $("toast").textContent = "", 2500); };
+  const shareText = () => {
+    const name = who.value.trim() ? ` (${who.value.trim()})` : "";
+    return `${S.n} ${S.t}${name}: ${poms.value.trim()}`;
+  };
+  const copy = async () => {
+    if (!poms.value.trim()) { toast("Write your point first."); poms.focus(); return false; }
+    try { await navigator.clipboard.writeText(shareText()); toast("Copied."); return true; }
+    catch (e) {
+      const t = document.createElement("textarea"); t.value = shareText(); document.body.appendChild(t);
+      t.select(); document.execCommand("copy"); t.remove(); toast("Copied."); return true;
+    }
+  };
+
+  $("copyBtn").addEventListener("click", copy);
+  if (WALL_URL) {
+    $("wallBtn").hidden = false;
+    $("wallBtn").addEventListener("click", async () => { if (await copy()) window.open(WALL_URL, "_blank", "noopener"); });
+  } else {
+    $("copyBtn").classList.add("wide");
+  }
+
+  $("showBig").addEventListener("click", () => {
+    if (!poms.value.trim()) { toast("Write your point first."); poms.focus(); return; }
+    $("bigStd").textContent = `${S.n} ${S.t}`;
+    $("bigText").textContent = poms.value.trim();
+    $("bigName").textContent = who.value.trim();
+    $("big").classList.add("on");
+    $("closeBig").focus();
+  });
+  const closeBig = () => { $("big").classList.remove("on"); $("showBig").focus(); };
+  $("closeBig").addEventListener("click", closeBig);
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeBig(); });
+</script>
+</body>
+</html>
